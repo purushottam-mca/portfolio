@@ -376,37 +376,87 @@ async function render() {
 
 // Cat Logic
 const cat = document.getElementById('cat');
+const catMenu = document.getElementById('cat-menu');
 let isDancing = false;
+let isRunning = false;
+let catPosition = 'right'; // 'right' or 'left'
+let menuHideTimeout;
 
 cat.addEventListener('mouseenter', () => {
-    if (!isDancing) {
+    clearTimeout(menuHideTimeout);
+    if (!isDancing && !isRunning) {
         cat.classList.remove('sleeping');
         cat.classList.add('standing');
+        catMenu.style.display = 'flex';
     }
 });
 
 cat.addEventListener('mouseleave', () => {
-    if (!isDancing) {
-        cat.classList.remove('standing');
-        cat.classList.add('sleeping');
-    }
-});
-
-cat.addEventListener('click', () => {
-    if (isDancing) return;
-    isDancing = true;
-    cat.classList.remove('sleeping', 'standing');
-    cat.classList.add('dancing');
-
-    setTimeout(() => {
-        cat.classList.remove('dancing');
-        cat.classList.add('standing');
-        isDancing = false;
-        if (!cat.matches(':hover')) {
+    menuHideTimeout = setTimeout(() => {
+        catMenu.style.display = 'none';
+        if (!isDancing && !isRunning) {
             cat.classList.remove('standing');
             cat.classList.add('sleeping');
         }
-    }, 2000);
+    }, 500); // .5 seconds delay
+});
+
+catMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+    clearTimeout(menuHideTimeout);
+    const action = e.target.dataset.action;
+    if (!action) return;
+
+    catMenu.style.display = 'none';
+
+    if (action === 'dance') {
+        if (isDancing || isRunning) return;
+        isDancing = true;
+        cat.classList.remove('sleeping', 'standing');
+        cat.classList.add('dancing');
+        setTimeout(() => {
+            cat.classList.remove('dancing');
+            cat.classList.add('standing');
+            isDancing = false;
+            if (!cat.matches(':hover')) {
+                cat.classList.remove('standing');
+                cat.classList.add('sleeping');
+            }
+        }, 2000);
+    } else if (action === 'run') {
+        if (isDancing || isRunning) return;
+        isRunning = true;
+        cat.classList.remove('sleeping', 'standing');
+        if (catPosition === 'right') {
+            cat.classList.add('running-left');
+            setTimeout(() => {
+                cat.classList.remove('running-left');
+                cat.classList.remove('right');
+                cat.classList.add('left');
+                catPosition = 'left';
+                cat.classList.add('standing');
+                isRunning = false;
+                if (!cat.matches(':hover')) {
+                    cat.classList.remove('standing');
+                    cat.classList.add('sleeping');
+                }
+            }, 2000);
+        } else {
+            cat.classList.add('running-right');
+            setTimeout(() => {
+                cat.classList.remove('running-right');
+                cat.classList.remove('left');
+                cat.classList.add('right');
+                catPosition = 'right';
+                cat.classList.add('standing');
+                isRunning = false;
+                if (!cat.matches(':hover')) {
+                    cat.classList.remove('standing');
+                    cat.classList.add('sleeping');
+                }
+            }, 2000);
+        }
+    }
 });
 
 // Init
