@@ -1,0 +1,29 @@
+[
+    {
+        "title": "Getting Started with Minimalism",
+        "path": "2024/01/getting-started",
+        "date": "2024-01-15",
+        "category": "Lifestyle",
+        "readTime": "5 min read",
+        "excerpt": "Exploring the principles of minimalist design and how less can truly be more in both life and work.",
+        "tags": ["minimalism", "design", "productivity"]
+    },
+    {
+        "title": "My First Project Launch",
+        "path": "2024/02/project-launch",
+        "date": "2024-02-20",
+        "category": "Development",
+        "readTime": "8 min read",
+        "excerpt": "Lessons learned from shipping my first major product to production and the challenges along the way.",
+        "tags": ["react", "startup", "career"]
+    },
+    {
+        "title": "Design Systems at Scale",
+        "path": "2025/04/design-systems",
+        "date": "2025-04-10",
+        "category": "Design",
+        "readTime": "12 min read",
+        "excerpt": "How to build and maintain design systems that grow with your organization without becoming bloated.",
+        "tags": ["design", "typescript", "ui"]
+    }
+]
