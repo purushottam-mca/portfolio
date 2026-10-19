@@ -33,27 +33,51 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
-// Data
-const projects = [
-    {
-        title: "Project Alpha",
-        description: "A modern web application built with React and Node.js. Features real-time collaboration and responsive design.",
-        tags: ["React", "Node.js", "Socket.io"],
-        link: "#"
+// ===================== SITE CONFIG — EDIT ME =====================
+// Central place to personalize your portfolio. Change values here
+// and the site updates everywhere (logo, title, about section, projects).
+const SITE_CONFIG = {
+    name: "Your Name",                          // Header logo + About heading
+    siteTitle: "Your Name — Portfolio",         // Browser tab title
+    about: {
+        heading: "Hello, I'm a Developer.",
+        subtitle: "I build things for the web. Focused on clean code, user experience, and minimalist design.",
+        paragraphs: [
+            "I'm a software engineer with a passion for creating elegant solutions to complex problems. I believe in the power of simplicity and strive to write code that is both efficient and maintainable.",
+            "When I'm not coding, you'll find me exploring new technologies, contributing to open source, or writing about my experiences in tech.",
+            "Currently working with modern JavaScript ecosystems, cloud infrastructure, and design systems. Always interested in challenging projects and collaborative opportunities."
+        ],
+        profileImage: "assets/profile.jpg",     // Change if you use different path
+        profileAlt: "Profile Photo"
     },
-    {
-        title: "Design System",
-        description: "A comprehensive component library with accessibility-first approach and dark mode support.",
-        tags: ["TypeScript", "Storybook", "CSS"],
-        link: "#"
-    },
-    {
-        title: "CLI Tool",
-        description: "Command-line utility for automating deployment workflows. Supports multiple cloud providers.",
-        tags: ["Go", "DevOps", "AWS"],
-        link: "#"
-    }
-];
+    // Edit projects below — title/description/tags/link. They appear in #projects and are searchable.
+    projects: [
+        {
+            title: "Project Alpha",
+            description: "A modern web application built with React and Node.js. Features real-time collaboration and responsive design.",
+            tags: ["React", "Node.js", "Socket.io"],
+            link: "#"
+        },
+        {
+            title: "Design System",
+            description: "A comprehensive component library with accessibility-first approach and dark mode support.",
+            tags: ["TypeScript", "Storybook", "CSS"],
+            link: "#"
+        },
+        {
+            title: "CLI Tool",
+            description: "Command-line utility for automating deployment workflows. Supports multiple cloud providers.",
+            tags: ["Go", "DevOps", "AWS"],
+            link: "#"
+        }
+    ]
+};
+
+// Apply branding immediately (logo + tab title)
+document.querySelector('.logo').textContent = SITE_CONFIG.name;
+document.title = SITE_CONFIG.siteTitle;
+
+const projects = SITE_CONFIG.projects;
 
 let blogIndex = [];
 let currentTag = null;
@@ -76,29 +100,20 @@ function updateActiveNav(route) {
 
 // Views
 function renderAbout() {
+    const { heading, subtitle, paragraphs, profileImage, profileAlt } = SITE_CONFIG.about;
+    const paragraphsHtml = paragraphs.map(p => `<p>${p}</p>`).join('');
     return `
         <section class="about-section">
             <div class="about-text">
-                <h1>Hello, I'm a Developer.</h1>
-                <p class="subtitle">I build things for the web. Focused on clean code, user experience, and minimalist design.</p>
+                <h1>${heading}</h1>
+                <p class="subtitle">${subtitle}</p>
                 <div class="about-content">
-                    <p>
-                        I'm a software engineer with a passion for creating elegant solutions to complex problems. 
-                        I believe in the power of simplicity and strive to write code that is both efficient and maintainable.
-                    </p>
-                    <p>
-                        When I'm not coding, you'll find me exploring new technologies, contributing to open source, 
-                        or writing about my experiences in tech.
-                    </p>
-                    <p>
-                        Currently working with modern JavaScript ecosystems, cloud infrastructure, and design systems. 
-                        Always interested in challenging projects and collaborative opportunities.
-                    </p>
+                    ${paragraphsHtml}
                 </div>
             </div>
             <div class="about-image-wrapper">
                 <div class="about-image" id="about-image">
-                    <img src="assets/profile.jpg" alt="Profile Photo" onerror="this.style.display='none'; document.getElementById('about-image').classList.add('no-image');">
+                    <img src="${profileImage}" alt="${profileAlt}" onerror="this.style.display='none'; document.getElementById('about-image').classList.add('no-image');">
                 </div>
             </div>
         </section>
@@ -108,15 +123,17 @@ function renderAbout() {
 function renderProjects() {
     const searchSvg = `<svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>`;
     
-    const cards = projects.map(p => `
+    const cards = projects.map(p => {
+        const titleHtml = p.link && p.link !== '#' ? `<a href="${p.link}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">${p.title} ↗</a>` : p.title;
+        return `
         <article class="project-card" data-search="${(p.title + ' ' + p.description + ' ' + p.tags.join(' ')).toLowerCase()}">
-            <h3>${p.title}</h3>
+            <h3>${titleHtml}</h3>
             <p>${p.description}</p>
             <div class="project-tags">
                 ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
             </div>
         </article>
-    `).join('');
+    `}).join('');
 
     return `
         <section>
@@ -374,7 +391,7 @@ async function render() {
     }
 }
 
-// Cat Logic
+// Cat Logic - Responsive Edition
 const cat = document.getElementById('cat');
 const catMenu = document.getElementById('cat-menu');
 let isDancing = false;
@@ -382,81 +399,165 @@ let isRunning = false;
 let catPosition = 'right'; // 'right' or 'left'
 let menuHideTimeout;
 
+function wakeCat() {
+    if (isDancing || isRunning) return;
+    cat.classList.remove('sleeping');
+    cat.classList.add('standing');
+    catMenu.style.display = 'flex';
+}
+
+function sleepCat() {
+    if (isDancing || isRunning) return;
+    cat.classList.remove('standing');
+    cat.classList.add('sleeping');
+}
+
+function doDance() {
+    if (isDancing || isRunning) return;
+    isDancing = true;
+    clearTimeout(menuHideTimeout);
+    catMenu.style.display = 'none';
+    cat.classList.remove('sleeping', 'standing');
+    cat.classList.add('dancing');
+    setTimeout(() => {
+        cat.classList.remove('dancing');
+        cat.classList.add('standing');
+        isDancing = false;
+        if (!cat.matches(':hover')) {
+            // small delay to allow quick re-hover
+            menuHideTimeout = setTimeout(() => {
+                if (!cat.matches(':hover')) {
+                    cat.classList.remove('standing');
+                    cat.classList.add('sleeping');
+                }
+            }, 180);
+        }
+    }, 1500);
+}
+
+function doRun() {
+    if (isDancing || isRunning) return;
+    isRunning = true;
+    clearTimeout(menuHideTimeout);
+    catMenu.style.display = 'none';
+    cat.classList.remove('sleeping', 'standing');
+    if (catPosition === 'right') {
+        cat.classList.add('running-left');
+        setTimeout(() => {
+            cat.classList.remove('running-left');
+            cat.classList.remove('right');
+            cat.classList.add('left');
+            catPosition = 'left';
+            cat.classList.add('standing');
+            isRunning = false;
+            if (!cat.matches(':hover')) {
+                menuHideTimeout = setTimeout(() => {
+                    if (!cat.matches(':hover')) { cat.classList.remove('standing'); cat.classList.add('sleeping'); }
+                }, 180);
+            }
+        }, 1200);
+    } else {
+        cat.classList.add('running-right');
+        setTimeout(() => {
+            cat.classList.remove('running-right');
+            cat.classList.remove('left');
+            cat.classList.add('right');
+            catPosition = 'right';
+            cat.classList.add('standing');
+            isRunning = false;
+            if (!cat.matches(':hover')) {
+                menuHideTimeout = setTimeout(() => {
+                    if (!cat.matches(':hover')) { cat.classList.remove('standing'); cat.classList.add('sleeping'); }
+                }, 180);
+            }
+        }, 1200);
+    }
+}
+
+// Hover - instant wake, fast sleep (180ms)
 cat.addEventListener('mouseenter', () => {
     clearTimeout(menuHideTimeout);
-    if (!isDancing && !isRunning) {
-        cat.classList.remove('sleeping');
-        cat.classList.add('standing');
-        catMenu.style.display = 'flex';
-    }
+    wakeCat();
 });
 
 cat.addEventListener('mouseleave', () => {
     menuHideTimeout = setTimeout(() => {
         catMenu.style.display = 'none';
-        if (!isDancing && !isRunning) {
-            cat.classList.remove('standing');
-            cat.classList.add('sleeping');
-        }
-    }, 500); // .5 seconds delay
+        sleepCat();
+    }, 180);
+});
+
+// Keep menu open when hovering it
+catMenu.addEventListener('mouseenter', () => clearTimeout(menuHideTimeout));
+catMenu.addEventListener('mouseleave', () => {
+    menuHideTimeout = setTimeout(() => {
+        catMenu.style.display = 'none';
+        if (!cat.matches(':hover')) sleepCat();
+    }, 180);
+});
+
+// Click on cat body -> dance (spec behavior, most responsive)
+// Click on menu buttons -> dance / run
+cat.addEventListener('click', (e) => {
+    // if clicking a menu button, handled below
+    if (e.target.closest('.cat-option')) return;
+    // direct click on cat wrapper triggers dance instantly
+    doDance();
 });
 
 catMenu.addEventListener('click', (e) => {
     e.stopPropagation();
     clearTimeout(menuHideTimeout);
-    const action = e.target.dataset.action;
+    const action = e.target.closest('.cat-option')?.dataset.action;
     if (!action) return;
-
     catMenu.style.display = 'none';
+    if (action === 'dance') doDance();
+    else if (action === 'run') doRun();
+});
 
-    if (action === 'dance') {
-        if (isDancing || isRunning) return;
-        isDancing = true;
-        cat.classList.remove('sleeping', 'standing');
-        cat.classList.add('dancing');
-        setTimeout(() => {
-            cat.classList.remove('dancing');
-            cat.classList.add('standing');
-            isDancing = false;
-            if (!cat.matches(':hover')) {
-                cat.classList.remove('standing');
-                cat.classList.add('sleeping');
+// Touch support - tap to wake/dance
+let touchWoke = false;
+cat.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (cat.classList.contains('sleeping')) {
+        clearTimeout(menuHideTimeout);
+        wakeCat();
+        touchWoke = true;
+        // auto-sleep if no second tap
+        menuHideTimeout = setTimeout(() => {
+            if (!isDancing && !isRunning) {
+                catMenu.style.display = 'none';
+                sleepCat();
+                touchWoke = false;
             }
         }, 2000);
-    } else if (action === 'run') {
-        if (isDancing || isRunning) return;
-        isRunning = true;
-        cat.classList.remove('sleeping', 'standing');
-        if (catPosition === 'right') {
-            cat.classList.add('running-left');
-            setTimeout(() => {
-                cat.classList.remove('running-left');
-                cat.classList.remove('right');
-                cat.classList.add('left');
-                catPosition = 'left';
-                cat.classList.add('standing');
-                isRunning = false;
-                if (!cat.matches(':hover')) {
-                    cat.classList.remove('standing');
-                    cat.classList.add('sleeping');
-                }
-            }, 2000);
-        } else {
-            cat.classList.add('running-right');
-            setTimeout(() => {
-                cat.classList.remove('running-right');
-                cat.classList.remove('left');
-                cat.classList.add('right');
-                catPosition = 'right';
-                cat.classList.add('standing');
-                isRunning = false;
-                if (!cat.matches(':hover')) {
-                    cat.classList.remove('standing');
-                    cat.classList.add('sleeping');
-                }
-            }, 2000);
-        }
+    } else if (touchWoke) {
+        doDance();
+        touchWoke = false;
+    } else {
+        doDance();
     }
+}, { passive: false });
+
+// Eye follow mouse - subtle, cheap, responsive
+document.addEventListener('mousemove', (e) => {
+    if (cat.classList.contains('sleeping') || isDancing || isRunning) return;
+    const rect = cat.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / 200; // -1 to 1 range approx
+    const dy = (e.clientY - cy) / 200;
+    const pupils = cat.querySelectorAll('.pupil');
+    pupils.forEach(p => {
+        const x = Math.max(-3, Math.min(3, dx * 3));
+        const y = Math.max(-2, Math.min(2, dy * 2));
+        p.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+    });
+});
+cat.addEventListener('mouseleave', () => {
+    cat.querySelectorAll('.pupil').forEach(p => {
+        p.style.transform = 'translate(-50%, -50%)';
+    });
 });
 
 // Init

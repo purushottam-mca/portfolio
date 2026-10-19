@@ -613,7 +613,12 @@ body {
     width: 80px;
     height: 90px;
     margin: 15px auto 0;
-    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: transform 0.22s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    will-change: transform;
+}
+
+.cat-container:active .cat-wrapper {
+    transform: scale(0.93);
 }
 
 /* Head */
@@ -626,7 +631,7 @@ body {
     background: #f4a261;
     border-radius: 50%;
     z-index: 3;
-    transition: all 0.4s ease;
+    transition: all 0.22s ease;
 }
 
 .cat-head::before,
@@ -639,7 +644,7 @@ body {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-bottom: 18px solid #f4a261;
-    transition: all 0.4s ease;
+    transition: all 0.22s ease;
 }
 
 .cat-head::before {
@@ -661,7 +666,7 @@ body {
     background: white;
     border-radius: 50%;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .eye.left {
@@ -681,7 +686,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .nose {
@@ -705,7 +710,7 @@ body {
     background: #f4a261;
     border-radius: 20px 20px 16px 16px;
     z-index: 2;
-    transition: all 0.4s ease;
+    transition: all 0.22s ease;
 }
 
 /* Legs */
@@ -724,7 +729,7 @@ body {
     height: 14px;
     background: #f4a261;
     border-radius: 0 0 4px 4px;
-    transition: all 0.4s ease;
+    transition: all 0.22s ease;
 }
 
 /* Tail */
@@ -737,7 +742,7 @@ body {
     background: #f4a261;
     border-radius: 0 4px 4px 0;
     transform-origin: left center;
-    transition: all 0.4s ease;
+    transition: all 0.22s ease;
     z-index: 1;
 }
 
@@ -793,13 +798,22 @@ body {
     transform: rotate(-12deg);
 }
 
+/* Hover responsiveness - quick peek */
+.cat-container.standing:hover .pupil {
+    transform: translate(-30%, -60%);
+}
+.cat-container:hover {
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.2));
+}
+
 /* Zzz */
 .zzz-box {
     position: absolute;
     top: 0;
     right: 15px;
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.2s;
+    pointer-events: none;
 }
 
 .sleeping .zzz-box {
@@ -857,11 +871,11 @@ body {
 
 /* Running Animations */
 .running-left {
-    animation: runLeft 2s ease-in-out forwards;
+    animation: runLeft 1.2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
 }
 
 .running-right {
-    animation: runRight 2s ease-in-out forwards;
+    animation: runRight 1.2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
 }
 
 @keyframes runLeft {
@@ -876,21 +890,21 @@ body {
 
 /* Dancing */
 .dancing .cat-wrapper {
-    animation: catBounce 0.5s ease infinite;
+    animation: catBounce 0.4s ease infinite;
 }
 
 .dancing .tail {
-    animation: tailWag 0.25s ease infinite;
+    animation: tailWag 0.2s ease infinite;
 }
 
 .dancing .leg:nth-child(1),
 .dancing .leg:nth-child(3) {
-    animation: legLift1 0.5s ease infinite;
+    animation: legLift1 0.4s ease infinite;
 }
 
 .dancing .leg:nth-child(2),
 .dancing .leg:nth-child(4) {
-    animation: legLift2 0.5s ease infinite;
+    animation: legLift2 0.4s ease infinite;
 }
 
 @keyframes catBounce {
